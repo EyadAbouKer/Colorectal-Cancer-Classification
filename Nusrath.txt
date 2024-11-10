@@ -1,0 +1,78 @@
+# Change train_losses, val_losses, train_accuracies, and val_accuracies according o the variable you used.
+
+epochs = range(1, len(train_losses) + 1)
+
+# Plot Loss
+plt.figure(figsize=(12, 5))
+plt.subplot(1, 2, 1)
+plt.plot(epochs, train_losses, label='Training Loss')
+plt.plot(epochs, val_losses, label='Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training and Validation Loss')
+plt.legend()
+
+# Plot Accuracy
+plt.subplot(1, 2, 2)
+plt.plot(epochs, train_accuracies, label='Training Accuracy')
+plt.plot(epochs, val_accuracies, label='Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+
+#Code for different t-SNE approach 
+from sklearn.manifold import TSNE
+def extract_features(model, data_loader, device):
+    model.eval()  # Set model to evaluation mode
+    features = []
+    labels = []
+    
+    with torch.no_grad():
+        for images, target_labels in data_loader:
+            images = images.to(device)
+            target_labels = target_labels.to(device)
+            
+            # Forward pass through the model (extracting the output from the CNN encoder)
+            x = model.conv1(images)
+            x = model.bn1(x)
+            x = model.relu(x)
+            x = model.maxpool(x)
+            
+            # Pass through the layers until the penultimate layer (before final FC)
+            x = model.layer1(x)
+            x = model.layer2(x)
+            x = model.layer3(x)
+            x = model.layer4(x)
+            
+            # Flatten the features before passing to the fully connected layer
+            x = x.view(x.size(0), -1)  # Flatten the output
+            
+            features.append(x.cpu().numpy())  # Store the flattened features
+            labels.append(target_labels.cpu().numpy())  # Store the labels
+
+    # Concatenate all features and labels
+    features = np.concatenate(features, axis=0)
+    labels = np.concatenate(labels, axis=0)
+    
+    return features, labels
+
+# Extract features from both training and validation sets
+val_features, val_labels = extract_features(model, val_loader, device)
+
+# Apply t-SNE to reduce the features to 2D
+tsne = TSNE(n_components=2, random_state=42)
+tsne_features = tsne.fit_transform(val_features)
+
+# Visualize the 2D t-SNE embeddings
+plt.figure(figsize=(10, 8))
+scatter = plt.scatter(tsne_features[:, 0], tsne_features[:, 1], c= val_labels, cmap='viridis', alpha=0.6)
+plt.colorbar(scatter, label='Class Label')
+plt.title("t-SNE Visualization of output features(Task 1)")
+plt.xlabel("t-SNE Dimension 1")
+plt.ylabel("t-SNE Dimension 2")
+plt.show()
