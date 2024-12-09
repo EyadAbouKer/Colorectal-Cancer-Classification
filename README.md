@@ -7,8 +7,6 @@ This project focuses on addressing image classification problems in real-world a
 1. Training CNN models to classify images in a dataset related to colorectal cancer.
 2. Analyzing and visualizing feature extraction capabilities of pre-trained CNN models when applied to datasets related to prostate cancer and animal face classification.
 
-*The main jupyter notebook with all the code implementation lies in /Task1/main.ipynb*
-
 ## Key Features
 
 - Use of state-of-the-art CNN architectures such as ResNet, VGG, AlexNet, MobileNet, or ShuffleNet.
@@ -24,16 +22,8 @@ This project focuses on addressing image classification problems in real-world a
 
 ## Repository Structure
 
-```plaintext
-src/            # Contains all source code
-  train.py      # Code for training the CNN model
-  analyze.py    # Code for analyzing and visualizing extracted features
-notebooks/      # Jupyter notebooks for exploration and prototyping
-data/           # Instructions for obtaining datasets (datasets not included due to size limitations)
-results/        # Contains visualizations and results
-models/         # Trained CNN models
-README.md       # Project documentation
-```
+*The main jupyter notebook with all the code implementation lies in /Task1/main.ipynb*
+
 
 ## Results
 - Training accuracy/loss curves.
